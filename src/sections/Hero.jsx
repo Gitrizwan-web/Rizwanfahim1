@@ -5,7 +5,7 @@ import Animatecounter from "../Components/Animated/Animatecounter";
 import gsap from "gsap";
 import { useRef, lazy, Suspense } from "react";
 
-// ✅ lazy load 3D (CRITICAL FIX)
+// lazy 3D model
 const Heroexperience = lazy(() =>
   import("../Components/Heromodels/Heroexperience")
 );
@@ -31,17 +31,14 @@ const Hero = () => {
   return (
     <section id="hero" className="relative overflow-hidden">
 
-      {/* ✅ optimized background */}
+      {/* background */}
       <div className="absolute top-0 left-0 z-10">
-        <img
-          src="/images/bg.webp"
-          loading="lazy"
-          alt="background"
-        />
+        <img src="/images/bg.webp" loading="lazy" alt="background" />
       </div>
 
       <div className="hero-layout">
 
+        {/* TEXT SIDE */}
         <header
           ref={heroRef}
           className="flex flex-col justify-center md:w-full w-screen md:px-20 px-5"
@@ -61,7 +58,7 @@ const Hero = () => {
                       >
                         <img
                           src={word.imgPath}
-                          loading="lazy" // ✅ FIX
+                          loading="lazy"
                           alt={word.text}
                           className="xl:size-12 md:size-10 size-7 md:p-2 p-1 rounded-full bg-white/50"
                         />
@@ -87,12 +84,13 @@ const Hero = () => {
               id="button"
               text="See my Work"
             />
+
           </div>
         </header>
 
-        {/* ✅ lazy load 3D */}
+        {/* 3D MODEL SIDE (FIXED CLICK ISSUE) */}
         <figure>
-          <div className="hero-3d-layout">
+          <div className="hero-3d-layout pointer-events-none">
             <Suspense fallback={null}>
               <Heroexperience />
             </Suspense>

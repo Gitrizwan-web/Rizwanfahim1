@@ -1,61 +1,69 @@
 import Button from "../Components/Button";
-import Heroexperience from "../Components/Heromodels/Heroexperience";
 import { words } from "../constants/index";
 import { useGSAP } from "@gsap/react";
 import Animatecounter from "../Components/Animated/Animatecounter";
 import gsap from "gsap";
-import { useRef } from "react";
+import { useRef, lazy, Suspense } from "react";
+
+// ✅ lazy load 3D (CRITICAL FIX)
+const Heroexperience = lazy(() =>
+  import("../Components/Heromodels/Heroexperience")
+);
 
 const Hero = () => {
-
   const heroRef = useRef(null);
 
   useGSAP(
     () => {
-      gsap.fromTo(
-        heroRef.current.querySelectorAll("h1"),
-        {
-          y: 50,
-          opacity: 0,
-        },
-        {
-          y: 0,
-          opacity: 1,
-          stagger: 0.2,
-          duration: 1.2,   // 5 sec bahut slow lagta hai hero ke liye
-          ease: "power2.out",
-        }
-      );
+      const headings = heroRef.current.querySelectorAll(".hero-anim");
+
+      gsap.from(headings, {
+        y: 40,
+        opacity: 0,
+        stagger: 0.15,
+        duration: 0.8,
+        ease: "power2.out",
+      });
     },
-    { scope: heroRef }   // important
+    { scope: heroRef }
   );
 
   return (
     <section id="hero" className="relative overflow-hidden">
+
+      {/* ✅ optimized background */}
       <div className="absolute top-0 left-0 z-10">
-        <img src="/images/bg.png" alt="backgroundimg" />
+        <img
+          src="/images/bg.webp"
+          loading="lazy"
+          alt="background"
+        />
       </div>
 
       <div className="hero-layout">
+
         <header
           ref={heroRef}
           className="flex flex-col justify-center md:w-full w-screen md:px-20 px-5"
         >
           <div className="flex flex-col gap-7">
+
             <div className="hero-text">
-              <h1>
+
+              <h1 className="hero-anim">
                 Shaping
                 <span className="slide">
                   <span className="wrapper">
                     {words.map((word) => (
                       <span
                         key={word.text}
-                        className="flex items-center md:gap-3 gap-1 pb-2 "
+                        className="flex items-center md:gap-3 gap-1 pb-2"
                       >
                         <img
                           src={word.imgPath}
+                          loading="lazy" // ✅ FIX
                           alt={word.text}
-                          className="xl:size-12 md:size-10 size-7 md:p-2 p-1 rounded-full bg-white-50"
+                          className="xl:size-12 md:size-10 size-7 md:p-2 p-1 rounded-full bg-white/50"
                         />
                         <span>{word.text}</span>
                       </span>
@@ -64,28 +72,33 @@ const Hero = () => {
                 </span>
               </h1>
 
-              <h1>into Real Projects</h1>
-              <h1>that Deliver Results</h1>
+              <h1 className="hero-anim">into Real Projects</h1>
+              <h1 className="hero-anim">that Deliver Results</h1>
+
             </div>
 
-            <p className="text-sm md:text-base text-white/70 max-w-md leading-relaxed font-medium">
+            <p className="hero-anim text-sm md:text-base text-white/70 max-w-md leading-relaxed font-medium">
               Hi, I’m Rizwan — a MERN stack developer crafting fast, scalable,
               and beautiful web apps.
             </p>
 
             <Button
-              className="md:w-80 md:h-16 w-60 h-12"
+              className="md:w-80 md:h-16 w-60 h-12 hero-anim"
               id="button"
               text="See my Work"
             />
           </div>
         </header>
 
+        {/* ✅ lazy load 3D */}
         <figure>
           <div className="hero-3d-layout">
-            <Heroexperience />
+            <Suspense fallback={null}>
+              <Heroexperience />
+            </Suspense>
           </div>
         </figure>
+
       </div>
 
       <Animatecounter />

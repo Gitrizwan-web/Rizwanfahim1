@@ -1,66 +1,51 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import Navbar from "./sections/Navbar";
-import Hero from "./sections/Hero";
-import ShowCaseScetion from "./sections/ShowCaseScetion";
-import Logosections from "./sections/Logosections";
-import Featurecard from "./sections/Featurecard";
-import Experience from "./sections/Experience";
-import TeshStack from "./sections/TeshStack";
-import Testimonial from "./sections/Testimonial";
-import Contact from "./sections/Contact";
-import Footer from "./sections/Footer";
+// ✅ lazy load ALL heavy sections
+const Navbar = lazy(() => import("./sections/Navbar"));
+const Hero = lazy(() => import("./sections/Hero"));
+const ShowCaseScetion = lazy(() => import("./sections/ShowCaseScetion"));
+const Logosections = lazy(() => import("./sections/Logosections"));
+const Featurecard = lazy(() => import("./sections/Featurecard"));
+const Experience = lazy(() => import("./sections/Experience"));
+const TeshStack = lazy(() => import("./sections/TeshStack"));
+const Testimonial = lazy(() => import("./sections/Testimonial"));
+const Contact = lazy(() => import("./sections/Contact"));
+const Footer = lazy(() => import("./sections/Footer"));
 
 const App = () => {
   return (
     <>
-      {/* 🔔 Global Toast Notifications */}
+      {/* 🔔 Toast (lightweight, ok) */}
       <ToastContainer position="top-right" autoClose={3000} />
 
-      {/* 🔝 Navbar */}
-      <Navbar />
+      {/* ✅ Navbar */}
+      <Suspense fallback={null}>
+        <Navbar />
+      </Suspense>
 
-      {/* 📌 Main Sections */}
       <main className="flex flex-col gap-28 overflow-x-hidden">
 
-        <section id="hero">
+        <Suspense fallback={<div style={{ height: "100vh" }} />}>
           <Hero />
-        </section>
+        </Suspense>
 
-        <section id="work">
+        <Suspense fallback={null}>
           <ShowCaseScetion />
-        </section>
-
-        <section id="logos">
           <Logosections />
-        </section>
-
-        <section id="features">
           <Featurecard />
-        </section>
-
-        <section id="experience">
           <Experience />
-        </section>
-
-        <section id="skills">
           <TeshStack />
-        </section>
-
-        <section id="testimonials">
           <Testimonial />
-        </section>
-
-        <section id="contact">
           <Contact />
-        </section>
+        </Suspense>
 
       </main>
 
-      {/* 🔻 Footer */}
-      <Footer />
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
     </>
   );
 };
